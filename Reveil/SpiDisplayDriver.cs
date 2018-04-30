@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Spi;
 using Windows.Devices.Gpio;
-using Windows.Graphics;
+using Windows.Graphics.Imaging;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
-namespace SpiDisplay
+namespace SpiDisplayDriver
 {
 
-    public class SpiDisplayDriver
+    public class ILI9341_TFT_LCD_1
     {
         private const string SPI_CONTROLLER_NAME = "SPI0";              // For Raspberry Pi 2 & 3, use SPI0
         private const Int32 SPI_CHIP_SELECT_LINE = 0;                   // Line 0 maps to physical pin number 24 on the Raspberry Pi 2 & 3
@@ -173,6 +177,58 @@ namespace SpiDisplay
             }
         }
 
+        public async void LoadBitmap(ushort[] photo, string name)
+        {
+
+            StorageFile srcfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(name));
+
+            using (IRandomAccessStream fileStream = await srcfile.OpenAsync(Windows.Storage.FileAccessMode.Read))
+            {
+                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
+                BitmapTransform transform = new BitmapTransform()
+                {
+                    ScaledWidth = Convert.ToUInt32(LCD_W),
+                    ScaledHeight = Convert.ToUInt32(LCD_H)
+                };
+                PixelDataProvider pixelData = await decoder.GetPixelDataAsync(
+                    BitmapPixelFormat.Bgra8,
+                    BitmapAlphaMode.Straight,
+                    transform,
+                    ExifOrientationMode.IgnoreExifOrientation,
+                    ColorManagementMode.DoNotColorManage
+                );
+
+                byte[] sourcePixels = pixelData.DetachPixelData();
+
+                if (sourcePixels.Length != LCD_W * LCD_H * 4)
+                    return;
+
+                int pi = 0;
+                int i = 0;
+                byte red = 0, green = 0, blue = 0;
+                foreach (byte b in sourcePixels)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            blue = b;
+                            break;
+                        case 1:
+                            green = b;
+                            break;
+                        case 2:
+                            red = b;
+                            break;
+                        case 3:
+                            photo[pi] = RGB888ToRGB565(red, green, blue);
+                            pi++;
+                            break;
+                    }
+                    i = (i + 1) % 4;
+                }
+            }
+        }
+
         public void DrawPicture(ushort[] picture)
         {
             if (picture.Length != LCD_W * LCD_H)
@@ -197,6 +253,7 @@ namespace SpiDisplay
                 }
             }
         }
+
 
         public void LCDLine(uint colour, uint line)
         {
@@ -228,5 +285,7 @@ namespace SpiDisplay
             DataCommandPin.Write(GpioPinValue.Low);
             SpiDisplay.Write(Command);
         }
+
     }
+
 }

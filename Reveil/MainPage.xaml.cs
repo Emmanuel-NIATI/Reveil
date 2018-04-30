@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using SpiDisplay;
+using SpiDisplayDriver;
 using System.Threading.Tasks;
 
 // Pour plus d'informations sur le modèle d'élément Page vierge, consultez la page https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -52,21 +52,24 @@ namespace Reveil
         private MediaPlayer mediaPlayerBleu;
         private MediaPlayer mediaPlayerJaune;
 
-        SpiDisplayDriver spiDisplay = new SpiDisplayDriver();
+        ILI9341_TFT_LCD_1 spiDisplayDriver = new ILI9341_TFT_LCD_1();
 
-        ushort[] _picture = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
+        public const uint LCD_W = ILI9341_TFT_LCD_1.LCD_W;
+        public const uint LCD_H = ILI9341_TFT_LCD_1.LCD_H;
 
-        ushort[] _rp = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _windows = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _justine = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
+        ushort[] _picture = new ushort[LCD_W * LCD_H];
 
-        ushort[] _black = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _grey = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _white = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _red = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _green = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _blue = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
-        ushort[] _yellow = new ushort[SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H];
+        ushort[] _rp = new ushort[LCD_W * LCD_H];
+        ushort[] _windows = new ushort[LCD_W * LCD_H];
+        ushort[] _justine = new ushort[LCD_W * LCD_H];
+
+        ushort[] _black = new ushort[LCD_W * LCD_H];
+        ushort[] _grey = new ushort[LCD_W * LCD_H];
+        ushort[] _white = new ushort[LCD_W * LCD_H];
+        ushort[] _red = new ushort[LCD_W * LCD_H];
+        ushort[] _green = new ushort[LCD_W * LCD_H];
+        ushort[] _blue = new ushort[LCD_W * LCD_H];
+        ushort[] _yellow = new ushort[LCD_W * LCD_H];
 
         public MainPage()
         {
@@ -81,20 +84,20 @@ namespace Reveil
         private async void initSpiSisplay()
         {
 
-            await spiDisplay.PowerOnSequence();
-            await spiDisplay.Wakeup();
+            await spiDisplayDriver.PowerOnSequence();
+            await spiDisplayDriver.Wakeup();
 
-            LoadBitmap(_rp, "ms-appx:///assets/rp.png");
-            LoadBitmap(_windows, "ms-appx:///assets/windows.png");
-            LoadBitmap(_justine, "ms-appx:///assets/justine.jpg");
+            spiDisplayDriver.LoadBitmap(_rp, "ms-appx:///assets/rp.png");
+            spiDisplayDriver.LoadBitmap(_windows, "ms-appx:///assets/windows.png");
+            spiDisplayDriver.LoadBitmap(_justine, "ms-appx:///assets/justine.jpg");
 
-            LoadBitmap(_black, "ms-appx:///assets/black.jpg");
-            LoadBitmap(_grey, "ms-appx:///assets/grey.jpg");
-            LoadBitmap(_white, "ms-appx:///assets/white.jpg");
-            LoadBitmap(_red, "ms-appx:///assets/red.jpg");
-            LoadBitmap(_green, "ms-appx:///assets/green.jpg");
-            LoadBitmap(_blue, "ms-appx:///assets/blue.jpg");
-            LoadBitmap(_yellow, "ms-appx:///assets/yellow.jpg");
+            spiDisplayDriver.LoadBitmap(_black, "ms-appx:///assets/black.jpg");
+            spiDisplayDriver.LoadBitmap(_grey, "ms-appx:///assets/grey.jpg");
+            spiDisplayDriver.LoadBitmap(_white, "ms-appx:///assets/white.jpg");
+            spiDisplayDriver.LoadBitmap(_red, "ms-appx:///assets/red.jpg");
+            spiDisplayDriver.LoadBitmap(_green, "ms-appx:///assets/green.jpg");
+            spiDisplayDriver.LoadBitmap(_blue, "ms-appx:///assets/blue.jpg");
+            spiDisplayDriver.LoadBitmap(_yellow, "ms-appx:///assets/yellow.jpg");
 
             _picture = _black;
         }
@@ -148,82 +151,21 @@ namespace Reveil
 
         }
 
-        private async void LoadBitmap(ushort[] photo, string name)
-        {
-            StorageFile srcfile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(name));
-
-            using (IRandomAccessStream fileStream = await srcfile.OpenAsync(Windows.Storage.FileAccessMode.Read))
-            {
-                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
-                BitmapTransform transform = new BitmapTransform()
-                {
-                    ScaledWidth = Convert.ToUInt32(SpiDisplayDriver.LCD_W),
-                    ScaledHeight = Convert.ToUInt32(SpiDisplayDriver.LCD_H)
-                };
-                PixelDataProvider pixelData = await decoder.GetPixelDataAsync(
-                    BitmapPixelFormat.Bgra8,
-                    BitmapAlphaMode.Straight,
-                    transform,
-                    ExifOrientationMode.IgnoreExifOrientation,
-                    ColorManagementMode.DoNotColorManage
-                );
-
-                byte[] sourcePixels = pixelData.DetachPixelData();
-
-                if (sourcePixels.Length != SpiDisplayDriver.LCD_W * SpiDisplayDriver.LCD_H * 4)
-                    return;
-
-                int pi = 0;
-                int i = 0;
-                byte red = 0, green = 0, blue = 0;
-                foreach (byte b in sourcePixels)
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            blue = b;
-                            break;
-                        case 1:
-                            green = b;
-                            break;
-                        case 2:
-                            red = b;
-                            break;
-                        case 3:
-                            photo[pi] = SpiDisplayDriver.RGB888ToRGB565(red, green, blue);
-                            pi++;
-                            break;
-                    }
-                    i = (i + 1) % 4;
-                }
-            }
-        }
         
         private void travauxTimer()
         {
 
-            DispatcherTimer dispatcherTimerPicture = new DispatcherTimer();
-            dispatcherTimerPicture.Tick += dispatcherTimerPicture_Tick;
-            dispatcherTimerPicture.Interval = new TimeSpan(0, 0, 0, 1, 0);
-            dispatcherTimerPicture.Start();
-
-            DispatcherTimer dispatcherTimerButtun = new DispatcherTimer();
-            dispatcherTimerButtun.Tick += dispatcherTimerButtun_Tick;
-            dispatcherTimerButtun.Interval = new TimeSpan(0, 0, 0, 0, 1);
-            dispatcherTimerButtun.Start();
-        }
-
-        private void dispatcherTimerPicture_Tick(object sender, object e)
-        {
-
-            //spiDisplay.DrawPicture(_rp);
-            //spiDisplay.DrawPicture(_windows);
-            //spiDisplay.DrawPicture(_justine);
-            spiDisplay.DrawPicture(_picture);
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            dispatcherTimer.Start();
         }
         
-        private async void dispatcherTimerButtun_Tick(object sender, object e)
+        private async void dispatcherTimer_Tick(object sender, object e)
         {
+
+            // Afficher l'image
+            spiDisplayDriver.DrawPicture(_picture);
 
             // Bouton Noir
             if (_GpioPin17.Read() == GpioPinValue.High)
