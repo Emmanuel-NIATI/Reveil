@@ -247,7 +247,7 @@ namespace Reveil
 
             // Préparation de la Radio
             mediaPlayerRadio = new MediaPlayer();
-            mediaPlayerRadio.Source = MediaSource.CreateFromUri( new Uri( "http://direct.franceinter.fr/live/franceinter-midfi.mp3" ) );
+            mediaPlayerRadio.Source = MediaSource.CreateFromUri( new Uri("http://direct.franceinter.fr/live/franceinter-lofi.mp3") );
 
             // Préparation de la Sonnerie
             mediaPlayerSonnerie = new MediaPlayer();
