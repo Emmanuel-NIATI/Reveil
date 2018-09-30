@@ -18,6 +18,12 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <PackageCertificateKeyFile>Reveil_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,11 +101,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpiDisplayDriver.cs" />
+    <Compile Include="DisplayFont.cs" />
+    <Compile Include="Font12.cs" />
+    <Compile Include="Font6.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReveilDriver.cs" />
+    <Compile Include="SpiDisplayDriver.cs" />
+    <Compile Include="WS_ILI9488.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -108,16 +119,28 @@
     <None Include="Reveil_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\black.jpg" />
-    <Content Include="Assets\blue.jpg" />
-    <Content Include="Assets\green.jpg" />
-    <Content Include="Assets\grey.jpg" />
-    <Content Include="Assets\justine.jpg" />
-    <Content Include="Assets\red.jpg" />
-    <Content Include="Assets\rp.png" />
-    <Content Include="Assets\white.jpg" />
-    <Content Include="Assets\windows.png" />
-    <Content Include="Assets\yellow.jpg" />
+    <Content Include="Assets\justine01.jpg" />
+    <Content Include="Assets\justine02.bmp" />
+    <Content Include="Assets\justine02.jpg" />
+    <Content Include="Assets\kitty_horloge.png" />
+    <Content Include="Assets\kitty_reveil.png" />
+    <Content Include="Assets\kitty_sonnerie.gif" />
+    <Content Include="Assets\maker.png" />
+    <Content Include="Assets\test1.bmp" />
+    <Content Include="Icons\BLE_INIT.png" />
+    <Content Include="Icons\BLE_KO.png" />
+    <Content Include="Icons\BLE_OK.png" />
+    <Content Include="Icons\RJ45_INIT.png" />
+    <Content Include="Icons\RJ45_KO.png" />
+    <Content Include="Icons\RJ45_OK.png" />
+    <Content Include="Icons\RJ45_WRN.png" />
+    <Content Include="Icons\WIFI_INIT.png" />
+    <Content Include="Icons\WIFI_OK_0B.png" />
+    <Content Include="Icons\WIFI_OK_1B.png" />
+    <Content Include="Icons\WIFI_OK_2B.png" />
+    <Content Include="Icons\WIFI_OK_3B.png" />
+    <Content Include="Icons\WIFI_OK_4B.png" />
+    <Content Include="MP3\Indochine - Des fleurs pour Salinger.mp3" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -126,6 +149,7 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Sonneries\dring.mp3" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -133,6 +157,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

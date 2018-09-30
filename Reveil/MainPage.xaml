@@ -5,9 +5,60 @@
     xmlns:local="using:Reveil"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Loaded="Page_Loaded">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Name="Contour" BorderBrush="#8C001A" BorderThickness="2,2,2,2" Width="1280" Height="1024" Background="Black">
+
+        <RelativePanel>
+        
+            <TextBlock Name="DATE" Text="lun 30/04/2018" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="100" FontWeight="Bold" Height="125" Width="900" Margin="0,0,0,0" Foreground="#8C001A"/>
+            
+            <Image Name="RJ45" Height="125" Width="125" Margin="900,0,0,0" Source="Icons/RJ45_INIT.png" />
+            <Image Name="WIFI" Height="125" Width="125" Margin="1025,0,0,0" Source="Icons/WIFI_INIT.png" />
+            <Image Name="BLE" Height="125" Width="125" Margin="1150,0,0,0" Source="Icons/BLE_INIT.png" />
+            
+            <TextBlock Name="H_AFF" Text="08" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="300" FontWeight="Bold" Height="375" Width="360" Margin="0,125,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="PNT_1" Text=":" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="300" FontWeight="Bold" Height="375" Width="180" Margin="360,125,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="M_AFF" Text="30" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="300" FontWeight="Bold" Height="375" Width="360" Margin="540,125,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="PNT_2" Text=":" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="200" FontWeight="Bold" Height="250" Width="120" Margin="900,125,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="S_AFF" Text="00" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="200" FontWeight="Bold" Height="250" Width="240" Margin="1020,125,0,0" Foreground="#8C001A"/>
+            
+            <Image Name="I_LOGO" Height="500" Width="500" Margin="0,500,0,0" Source="Assets/maker.png" />
+            
+            <TextBlock Name="MOD_L" Text="Mode : " TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="210" Margin="500,500,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="MOD_T" Text="Horloge" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="500" Margin="710,500,0,0" Foreground="#8C001A"/>
+
+            <TextBlock Name="REV_L" Text="Reveil : " TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="270" Margin="500,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="H_REG" Text="06" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="60" Margin="770,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="PNT_3" Text=":" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="30" Margin="830,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="M_REG" Text="30" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="60" Margin="860,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="RPR_1" Text=" [" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="60" Margin="920,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="H_SON" Text="06" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="60" Margin="980,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="PNT_4" Text=":" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="30" Margin="1040,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="M_SON" Text="30" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="60" Margin="1070,575,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="RPR_2" Text="]" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="30" Margin="1130,575,0,0" Foreground="#8C001A"/>
+
+            <TextBlock Name="TYP_L" Text="Reveil (type) : " TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="480" Margin="500,650,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="TYP_C" Text="Sonnerie" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="220" Margin="980,650,0,0" Foreground="#8C001A"/>
+
+            <TextBlock Name="SON_L" Text="Sonnerie : " TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="330" Margin="500,725,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="SON_C" Text="Dring !" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="370" Margin="830,725,0,0" Foreground="#8C001A"/>
+
+            <TextBlock Name="RAD_L" Text="Radio : " TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="240" Margin="500,800,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="RAD_C" Text="France Inter" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="460" Margin="740,800,0,0" Foreground="#8C001A"/>
+
+            <TextBlock Name="MP3_L" Text="MP3 : " TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="180" Margin="500,875,0,0" Foreground="#8C001A"/>
+            <TextBlock Name="MP3_C" Text="Indochine - Des fleurs pour Salinger.mp3" TextAlignment="Left" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="520" Margin="680,875,0,0" Foreground="#8C001A"/>
+
+            <TextBlock Name="Btn_Gris" Text="Mode" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="150" Margin="500,950,0,0" Foreground="Gray"/>
+            <TextBlock Name="Btn_Blanc" Text="" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="150" Margin="650,950,0,0" Foreground="White"/>
+            <TextBlock Name="Btn_Vert" Text="" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="150" Margin="800,950,0,0" Foreground="Green"/>
+            <TextBlock Name="Btn_Bleu" Text="" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="150" Margin="950,950,0,0" Foreground="Blue"/>
+            <TextBlock Name="Btn_Jaune" Text="" TextAlignment="Center" FontFamily="Consolas" FontStyle="Italic" FontSize="50" FontWeight="Bold" Height="75" Width="150" Margin="1100,950,0,0" Foreground="Yellow"/>
+
+        </RelativePanel>
 
     </Grid>
+   
 </Page>
