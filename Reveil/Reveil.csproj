@@ -127,6 +127,7 @@
     <Content Include="Assets\kitty_reveil.png" />
     <Content Include="Assets\kitty_sonnerie.gif" />
     <Content Include="Assets\maker.png" />
+    <Content Include="Assets\maker02.png" />
     <Content Include="Assets\test1.bmp" />
     <Content Include="Icons\BLE_INIT.png" />
     <Content Include="Icons\BLE_KO.png" />
