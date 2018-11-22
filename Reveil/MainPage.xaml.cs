@@ -68,11 +68,16 @@ namespace Reveil
         private String _MODE = "HORLOGE";
         private String _TYPE = "SONNERIE";
 
-        // Variables liées à la sonnerie
+        // Variables liées au Reveil
         private String reveil = "0";
-        private MediaPlayer mediaPlayerMP3;
-        private MediaPlayer mediaPlayerRadio;
-        private MediaPlayer mediaPlayerSonnerie;
+
+        private MediaPlayer mediaPlayerReveil;
+
+        private MediaSource mediaSourceMP3;
+        private MediaSource mediaSourceRadio;
+        private MediaSource mediaSourceSonnerie;
+
+        private MediaElement mediaElementReveil;
 
         // Variables liées aux Boutons
         private String BTN_GRIS = "Mode";
@@ -98,6 +103,9 @@ namespace Reveil
 
         ushort[] _justine01 = new ushort[LCD_W * LCD_H];
         ushort[] _justine02 = new ushort[60 * 60];
+
+        ushort[] _maker02 = new ushort[LCD_W * LCD_H];
+
         ushort[] _point = new ushort[1 * 1];
         ushort[] _square = new ushort[40 * 40];
         ushort[] _rect = new ushort[60 * 40];
@@ -149,7 +157,8 @@ namespace Reveil
             // Chargement des images
             //_SpiDisplayDriver.LoadFile(_justine01, 240, 320, "ms-appx:///assets/justine01.jpg");
             //_SpiDisplayDriver.LoadFile(_justine02, 60, 60, "ms-appx:///assets/justine02.jpg");
-
+            _SpiDisplayDriver.LoadFile(_maker02, 240, 320, "ms-appx:///assets/maker02.png");
+            
             // Mise à la date et heure
             DATE.Text = _Date;
             H_AFF.Text = _H_AFF;
@@ -241,17 +250,17 @@ namespace Reveil
             Btn_Bleu.Text = BTN_BLEU;
             Btn_Jaune.Text = BTN_JAUNE;
 
+            // Préparation du réveil
+            mediaPlayerReveil = new MediaPlayer();
+
             // Préparation du MP3
-            mediaPlayerMP3 = new MediaPlayer();
-            mediaPlayerMP3.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///MP3/Indochine - Des fleurs pour Salinger.mp3"));
+            mediaSourceMP3 = MediaSource.CreateFromUri( new Uri( "ms-appx:///MP3/Indochine - Des fleurs pour Salinger.mp3" ) );
 
             // Préparation de la Radio
-            mediaPlayerRadio = new MediaPlayer();
-            mediaPlayerRadio.Source = MediaSource.CreateFromUri( new Uri("http://direct.franceinter.fr/live/franceinter-lofi.mp3") );
+            mediaSourceRadio = MediaSource.CreateFromUri( new Uri( "http://direct.franceinter.fr/live/franceinter-lofi.mp3" ) );
 
             // Préparation de la Sonnerie
-            mediaPlayerSonnerie = new MediaPlayer();
-            mediaPlayerSonnerie.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Sonneries/dring.mp3"));
+            mediaSourceSonnerie = MediaSource.CreateFromUri( new Uri( "ms-appx:///Sonneries/dring.mp3" ) );
 
         }
 
@@ -263,27 +272,27 @@ namespace Reveil
 
             // Bouton Gris sur GPIO27 en entrée
             _pin27 = _gpc.OpenPin(27);
-            _pin27.SetDriveMode(GpioPinDriveMode.Input);
+            _pin27.SetDriveMode(GpioPinDriveMode.InputPullDown);
             _pin27.DebounceTimeout = new TimeSpan(10000);
 
             // Bouton Blanc sur GPIO05 en entrée
             _pin05 = _gpc.OpenPin(5);
-            _pin05.SetDriveMode(GpioPinDriveMode.Input);
+            _pin05.SetDriveMode(GpioPinDriveMode.InputPullDown);
             _pin05.DebounceTimeout = new TimeSpan(10000);
 
             // Bouton Vert sur GPIO13 en entrée
             _pin13 = _gpc.OpenPin(13);
-            _pin13.SetDriveMode(GpioPinDriveMode.Input);
+            _pin13.SetDriveMode(GpioPinDriveMode.InputPullDown);
             _pin13.DebounceTimeout = new TimeSpan(10000);
 
             // Bouton Bleu sur GPIO19 en entrée
             _pin19 = _gpc.OpenPin(19);
-            _pin19.SetDriveMode(GpioPinDriveMode.Input);
+            _pin19.SetDriveMode(GpioPinDriveMode.InputPullDown);
             _pin19.DebounceTimeout = new TimeSpan(10000);
 
             // Bouton Jaune sur GPIO26 en entrée
             _pin26 = _gpc.OpenPin(26);
-            _pin26.SetDriveMode(GpioPinDriveMode.Input);
+            _pin26.SetDriveMode(GpioPinDriveMode.InputPullDown);
             _pin26.DebounceTimeout = new TimeSpan(10000);
 
         }
@@ -311,6 +320,7 @@ namespace Reveil
 
             _SpiDisplayDriver.DrawPicture(_lcd);
             //_SpiDisplayDriver.DrawPicture(_justine01);
+            _SpiDisplayDriver.DrawPicture(_maker02);
         }
 
         private void travauxTimer()
@@ -450,19 +460,24 @@ namespace Reveil
                         if( _TYPE.Equals("SONNERIE") )
                         {
 
-                            mediaPlayerSonnerie.Play();
+                            mediaPlayerReveil.Source = mediaSourceSonnerie;
+
                         }
                         else if ( _TYPE.Equals("RADIO") )
                         {
 
-                            mediaPlayerRadio.Play();
+                            mediaPlayerReveil.Source = mediaSourceRadio;
+
                         }
                         else if (_TYPE.Equals("MP3"))
                         {
 
-                            mediaPlayerMP3.Play();
+                            mediaPlayerReveil.Source = mediaSourceMP3;
+
                         }
 
+                        mediaPlayerReveil.Play();
+                        
                         reveil = "1";
 
                     }
@@ -809,21 +824,7 @@ namespace Reveil
                     if (reveil.Equals("1"))
                     {
 
-                        if (_TYPE.Equals("SONNERIE"))
-                        {
-
-                            mediaPlayerSonnerie.Pause();
-                        }
-                        else if (_TYPE.Equals("RADIO"))
-                        {
-
-                            mediaPlayerRadio.Pause();
-                        }
-                        else if (_TYPE.Equals("MP3"))
-                        {
-
-                            mediaPlayerMP3.Pause();
-                        }
+                        mediaPlayerReveil.Pause();
 
                         _M_SON = _UtilReveilDriver.addMinute( _M_AFF );
                         _M_SON = _UtilReveilDriver.addMinute( _M_SON );
